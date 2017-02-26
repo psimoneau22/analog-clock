@@ -1,10 +1,10 @@
-import { TestNumberOnlyPage } from './app.po';
+import { TestClockPage } from './app.po';
 
 describe('test-number-only App', () => {
-  let page: TestNumberOnlyPage;
+  let page: TestClockPage;
 
   beforeEach(() => {
-    page = new TestNumberOnlyPage();
+    page = new TestClockPage();
   });
 
   it('should display message saying app works', () => {
