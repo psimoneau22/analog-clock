@@ -1,5 +1,6 @@
 import { Component, OnInit, OnChanges, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MdSlideToggle } from '@angular/material';
+import { ClockValue, ClockState } from './clock.models';
 
 @Component({
   selector: 'app-clock',
@@ -12,91 +13,64 @@ export class ClockComponent implements OnChanges {
   radius = 100;
 
   @Input()
-  state: 'hours' | 'minutes' = 'hours';
+  state: ClockState;
 
   @Output()
-  change = new EventEmitter<{
-    state: 'hours' | 'minutes'
-    hours: number,
-    minutes: number
-  }>();
+  change = new EventEmitter<ClockValue>();
 
   hours = 0;
-
   minutes = 0;
 
   private twenty4Hour = false;
   private segments: { value: number, path: string }[];
   private labels: {}[];
 
-  constructor(
-  ) { }
-
   ngOnChanges() {
     this.createClock();
   }
 
   private get selectedEndPoint(){
-    const angle = this.state === 'hours' ? (30 * this.hours) : (this.minutes * 6);
+    const angle = this.state === ClockState.hours ? (30 * this.hours) : (this.minutes * 6);
     return this.getPoint(angle, this.radius, .85);
   }
 
   private get transform() {
-    return `rotate(-90, ${this.radius}, ${this.radius})`;
+    return `rotate(-90) translate(-${this.radius + 1}, ${this.radius + 1})`;
   }
 
   private createClock() {
     this.segments = [];
-    for (let i = 0; i < 12; i++) {
-      let value = this.state === 'hours' ? i : i * 5;
-      if (this.state === 'hours' && this.twenty4Hour) {
-        value += 12;
-      }
-      this.segments.push({
-        path: this.getSegmentPath(12, i),
-        value
-      });
-    }
-
     this.labels = [];
-    let step = 1;
-    let start = 0;
-    if (this.state === 'minutes') {
-      step = 5;
-    } else if (this.twenty4Hour) {
-      start = 12;
-    }
+    const step = this.state === ClockState.minutes ? 5 : 1;
+    const start = this.state === ClockState.hours && this.twenty4Hour ? 12 : 0;
     for (let i = 0; i < 12; i++) {
       const angle = i * 30;
       const point = this.getPoint(angle, this.radius, .85);
       const value = i * step + start;
+
+      this.segments.push({
+        path: this.getSegmentPath(12, i),
+        value
+      });
+
       this.labels.push({
         x: point.x,
         y: point.y,
         text: value.toString(),
-        selected: value === (this.state === 'minutes' ? this.minutes : this.hours),
-        transform: `${this.transform} rotate(90, ${point.x}, ${point.y}) translate(0, 5)`
+        selected: value === (this.state === ClockState.minutes ? this.minutes : this.hours),
+        transform: `rotate(90, ${point.x}, ${point.y}) translate(0, 5)`
       });
     }
   }
 
   private getSegmentPath(segmentCount: number, index: number) {
-    const r = this.radius;
     const offset = 180 / segmentCount;
-    const angle = index * 360 / segmentCount;
-
-    const startAngle = angle - offset;
-    const startPoint = this.getPoint(startAngle, this.radius);
-
+    const startAngle = index * 360 / segmentCount - offset;
+    const start = this.getPoint(startAngle, this.radius);
     const endAngle = startAngle + 360 / segmentCount;
-    const endPoint = this.getPoint(endAngle, this.radius);
+    const end = this.getPoint(endAngle, this.radius);
 
-    let path = `M ${r} ${r} `;
-    path += `L ${startPoint.x} ${startPoint.y} `;
-    path += `A ${r},${r} 0 0 1 ${endPoint.x} ${endPoint.y} `;
-    path += `L ${r} ${r} Z`;
-
-    return path;
+    return `M 0 0 L ${start.x} ${start.y} A 0,0 0 0 1 ${end.x} ${end.y} L 0 0 Z`;
   }
 
   private toggleHourSelect(twelveHour: boolean) {
@@ -112,15 +86,15 @@ export class ClockComponent implements OnChanges {
   private getPoint(angle: number, radius: number, multiplier = 1) {
     const rads = angle * Math.PI / 180;
     return {
-      x: multiplier * radius * Math.cos(rads) + radius,
-      y: multiplier * radius * Math.sin(rads) + radius
+      x: multiplier * this.radius * Math.cos(rads),
+      y: multiplier * this.radius * Math.sin(rads)
     };
   }
 
   private segmentClicked(segment: { value: number, path: string }) {
-    if (this.state === 'minutes' && this.minutes !== segment.value) {
+    if (this.state === ClockState.minutes && this.minutes !== segment.value) {
       this.minutes = segment.value;
-    } else if (this.state === 'hours'  && this.hours !== segment.value) {
+    } else if (this.state === ClockState.hours  && this.hours !== segment.value) {
       this.hours = segment.value;
     }
     this.createClock();

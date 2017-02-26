@@ -1,11 +1,9 @@
 <div class="container">
   <div class="header">
     <div class="hour-switch">
-      <md-slide-toggle class="example-margin" #hourSelect
+      <md-slide-toggle #hourSelect
         [checked]="twelveHour"
-        (change)="toggleHourSelect(hourSelect.checked)">
-          24hr
-        </md-slide-toggle>
+        (change)="toggleHourSelect(hourSelect.checked)">24hr</md-slide-toggle>
     </div>
     <div class="status">Enter {{this.state}}</div>
     <div class="time-display">
@@ -14,29 +12,25 @@
     </div>
   </div>
 
-  <svg  xmlns="http://www.w3.org/2000/svg"
-    [attr.width]="radius * 2"
-    [attr.height]="radius * 2">
-    <line class="hand hand-arm"
-      [attr.x1]="radius" [attr.y1]="radius" 
-      [attr.x2]="selectedEndPoint.x" [attr.y2]="selectedEndPoint.y"
-      [attr.transform]="transform" />
-    <circle class="hand"
-      [attr.cx]="selectedEndPoint.x" [attr.cy]="selectedEndPoint.y"
-      [attr.r]="15"
-      [attr.transform]="transform" />
-    <circle class="hand"
-      [attr.cx]="radius" [attr.cy]="radius"
-      [attr.r]="5"/>
-    <text text-anchor="middle" class="label"
-      *ngFor="let label of labels"
-      [ngClass]="{'selected': label.selected}"
-      [attr.transform]="label.transform" 
-      [attr.x]="label.x" [attr.y]="label.y">{{label.text}}</text>
-    <path fill="transparent" class="segment"
-      *ngFor="let segment of segments" 
-      [attr.d]="segment.path"
-      [attr.transform]="transform"
-      (click)="segmentClicked(segment)" />    
+  <svg  xmlns="http://www.w3.org/2000/svg" [attr.width]="radius * 2 + 2" [attr.height]="radius * 2 + 2">
+    <g [attr.transform]="transform">
+      <line class="hand hand-arm"
+        [attr.x1]="0" [attr.y1]="0" 
+        [attr.x2]="selectedEndPoint.x" [attr.y2]="selectedEndPoint.y"/>
+      <circle class="hand"
+        [attr.cx]="selectedEndPoint.x" [attr.cy]="selectedEndPoint.y"
+        [attr.r]="15" />
+      <circle class="hand"
+        [attr.r]="5"/>
+      <text text-anchor="middle" class="label"
+        *ngFor="let label of labels"
+        [ngClass]="{'selected': label.selected}"
+        [attr.transform]="label.transform" 
+        [attr.x]="label.x" [attr.y]="label.y">{{label.text}}</text>
+      <path fill="transparent" class="segment"
+        *ngFor="let segment of segments" 
+        [attr.d]="segment.path"
+        (click)="segmentClicked(segment)" />    
+    </g>
   </svg>
 </div>
