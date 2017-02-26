@@ -29,6 +29,10 @@ export class ClockComponent implements OnChanges {
     this.createClock();
   }
 
+  private get stateDisplay() {
+    return ClockState[this.state];
+  }
+
   private get selectedEndPoint(){
     const angle = this.state === ClockState.hours ? (30 * this.hours) : (this.minutes * 6);
     return this.getPoint(angle, this.radius, .85);
