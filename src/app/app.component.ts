@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Directive, ElementRef, HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +6,18 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'app works!';
+
+  private state = 'hours';
+  private onTimeSelect(event: {
+      state: 'hours' | 'minutes'
+      hours: number,
+      minutes: number
+    }) {
+
+    setTimeout(() => {
+      this.state = this.state === 'minutes' ? 'hours' : 'minutes';
+    }, 500);
+
+  }
+
 }
