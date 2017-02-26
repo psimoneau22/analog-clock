@@ -8,7 +8,9 @@
     "start": "ng serve",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "build": "ng build --prod --base-href /analog-clock/",
+    "deploy": "npm run build && git subtree push --prefix dist origin gh-pages"
   },
   "private": true,
   "dependencies": {
