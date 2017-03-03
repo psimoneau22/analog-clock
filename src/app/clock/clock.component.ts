@@ -29,6 +29,10 @@ export class ClockComponent implements OnChanges {
     this.createClock();
   }
 
+  private get displayHand(){
+    return (this.twenty4Hour && this.hours > 11) || (!this.twenty4Hour && this.hours <= 11);
+  }
+
   private get stateDisplay() {
     return ClockState[this.state];
   }
@@ -79,11 +83,6 @@ export class ClockComponent implements OnChanges {
 
   private toggleHourSelect(twelveHour: boolean) {
     this.twenty4Hour = twelveHour;
-    if (this.twenty4Hour && this.hours < 12) {
-      this.hours = 12;
-    } else if (!this.twenty4Hour && this.hours > 11) {
-      this.hours = 0;
-    }
     this.createClock();
   }
 

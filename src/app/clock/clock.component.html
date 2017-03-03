@@ -14,17 +14,17 @@
 
   <svg  xmlns="http://www.w3.org/2000/svg" [attr.width]="radius * 2 + 2" [attr.height]="radius * 2 + 2">
     <g [attr.transform]="transform">
-      <line class="hand hand-arm"
+      <line class="hand hand-arm" *ngIf="displayHand"
         [attr.x1]="0" [attr.y1]="0" 
         [attr.x2]="selectedEndPoint.x" [attr.y2]="selectedEndPoint.y"/>
-      <circle class="hand"
+      <circle class="hand" *ngIf="displayHand"
         [attr.cx]="selectedEndPoint.x" [attr.cy]="selectedEndPoint.y"
         [attr.r]="15" />
       <circle class="hand"
         [attr.r]="5"/>
       <text text-anchor="middle" class="label"
         *ngFor="let label of labels"
-        [ngClass]="{'selected': label.selected}"
+        [ngClass]="{'selected': label.selected && displayHand}"
         [attr.transform]="label.transform" 
         [attr.x]="label.x" [attr.y]="label.y">{{label.text}}</text>
       <path fill="transparent" class="segment"
