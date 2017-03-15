@@ -30,7 +30,7 @@ export class ClockComponent implements OnChanges {
   }
 
   private get displayHand(){
-    return (this.twenty4Hour && this.hours > 11) || (!this.twenty4Hour && this.hours <= 11);
+    return (this.state === ClockState.minutes) || (this.twenty4Hour && this.hours > 11) || (!this.twenty4Hour && this.hours <= 11);
   }
 
   private get stateDisplay() {
@@ -43,7 +43,7 @@ export class ClockComponent implements OnChanges {
   }
 
   private get transform() {
-    return `rotate(-90) translate(-${this.radius + 1}, ${this.radius + 1})`;
+    return `rotate(-90) translate(-${this.radius + 10}, ${this.radius + 10})`;
   }
 
   private createClock() {
