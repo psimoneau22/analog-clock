@@ -8,10 +8,9 @@ import { ClockValue, ClockState } from './clock/clock.models';
 })
 export class AppComponent {
 
-  private state = ClockState.hours;
+ 
+
   private onTimeSelect(event: ClockValue) {
-    setTimeout(() => {
-      this.state = this.state === ClockState.minutes ? ClockState.hours : ClockState.minutes;
-    }, 500);
+    console.log(event);
   }
 }

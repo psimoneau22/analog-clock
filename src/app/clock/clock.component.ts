@@ -1,4 +1,5 @@
 import { Component, OnInit, OnChanges, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+
 import { MdSlideToggle } from '@angular/material';
 import { ClockValue, ClockState } from './clock.models';
 
@@ -12,8 +13,8 @@ export class ClockComponent implements OnChanges {
   @Input()
   radius = 100;
 
-  @Input()
-  state: ClockState;
+
+  state = ClockState.hours;
 
   @Output()
   change = new EventEmitter<ClockValue>();
@@ -24,17 +25,19 @@ export class ClockComponent implements OnChanges {
   private twenty4Hour = false;
   private segments: { value: number, path: string }[];
   private labels: {}[];
+  private ClockState = ClockState;
 
   ngOnChanges() {
     this.createClock();
   }
 
-  private get displayHand(){
-    return (this.state === ClockState.minutes) || (this.twenty4Hour && this.hours > 11) || (!this.twenty4Hour && this.hours <= 11);
+  private setState(state: ClockState) {
+    this.state = state;
+    this.createClock();
   }
 
-  private get stateDisplay() {
-    return ClockState[this.state];
+  private get displayHand(){
+    return (this.state === ClockState.minutes) || (this.twenty4Hour && this.hours > 11) || (!this.twenty4Hour && this.hours <= 11);
   }
 
   private get selectedEndPoint(){
@@ -102,8 +105,11 @@ export class ClockComponent implements OnChanges {
     }
     this.createClock();
 
+    setTimeout(() => {
+      this.state = this.state === ClockState.minutes ? ClockState.hours : ClockState.minutes;
+      this.createClock();
+    }, 500);
     this.change.emit({
-      state: this.state,
       hours: this.hours,
       minutes: this.minutes
     });

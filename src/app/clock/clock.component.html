@@ -5,10 +5,13 @@
         [checked]="twelveHour"
         (change)="toggleHourSelect(hourSelect.checked)">24hr</md-slide-toggle>
     </div>
-    <div class="status">Enter {{stateDisplay}}</div>
     <div class="time-display">
-      <span>{{hours}}</span>h
-      <span>{{minutes}}</span>m
+      <div (click)="setState(ClockState.hours)">
+        <span [ngClass]="{'selected': state === ClockState.hours}">{{hours}}</span>h
+      </div>
+      <div (click)="setState(ClockState.minutes)">
+        <span [ngClass]="{'selected': state === ClockState.minutes}">{{minutes}}</span>m
+      </div>
     </div>
   </div>
 
