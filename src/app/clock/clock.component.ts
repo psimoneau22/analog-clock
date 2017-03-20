@@ -1,24 +1,25 @@
-import { Component, OnInit, OnChanges, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-
+import { Component, OnInit, OnChanges, EventEmitter, Input, Output, } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MdSlideToggle } from '@angular/material';
 import { ClockValue, ClockState } from './clock.models';
 
 @Component({
   selector: 'app-clock',
   templateUrl: './clock.component.html',
-  styleUrls: ['./clock.component.css']
+  styleUrls: ['./clock.component.css'],
+  providers: [
+    { provide:  NG_VALUE_ACCESSOR, useExisting: ClockComponent, multi: true }
+  ]
 })
-export class ClockComponent implements OnChanges {
+export class ClockComponent implements OnChanges, ControlValueAccessor {
 
   @Input()
   radius = 100;
 
-
-  state = ClockState.hours;
-
   @Output()
   change = new EventEmitter<ClockValue>();
 
+  state = ClockState.hours;
   hours = 0;
   minutes = 0;
 
@@ -26,10 +27,24 @@ export class ClockComponent implements OnChanges {
   private segments: { value: number, path: string }[];
   private labels: {}[];
   private ClockState = ClockState;
+  private onModelChange: (value: ClockValue) => void = () => { };
 
   ngOnChanges() {
     this.createClock();
   }
+
+  writeValue(value: ClockValue): void {
+    if (value) {
+      this.hours = value.hours;
+      this.minutes = value.minutes;
+    }
+  }
+
+  registerOnChange(fn: (value: ClockValue) => void): void {
+    this.onModelChange = fn;
+  }
+
+  registerOnTouched(fn: any): void { }
 
   private setState(state: ClockState) {
     this.state = state;
@@ -109,9 +124,12 @@ export class ClockComponent implements OnChanges {
       this.state = this.state === ClockState.minutes ? ClockState.hours : ClockState.minutes;
       this.createClock();
     }, 500);
-    this.change.emit({
+
+    const value = {
       hours: this.hours,
       minutes: this.minutes
-    });
+    };
+    this.onModelChange(value);
+    this.change.emit(value);
   }
 }

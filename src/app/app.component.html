@@ -1,1 +1,2 @@
-<app-clock [radius]="100" (change)="onTimeSelect($event)"></app-clock>
+<app-clock [radius]="100" [(ngModel)]="val" (change)="onTimeSelect($event)"></app-clock>
+{{val | json }}

@@ -8,7 +8,7 @@ import { ClockValue, ClockState } from './clock/clock.models';
 })
 export class AppComponent {
 
- 
+  val = { hours: 0, minutes: 0 }
 
   private onTimeSelect(event: ClockValue) {
     console.log(event);
